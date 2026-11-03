@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Prestations {% endblock %}
+
+{% block body %}
+
+{% for messages in app.flashes(['success', 'warning']) %}
+    {% for message in messages %}
+        <div class="flash-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endfor %}
+
+
+{% for item in prestations %}
+    <p>{{ item.nom }}</p>
+    <img src="{{ asset('prestations/' ~ item.image) }}" alt="{{ item.nom }}">
+    <p>{{ item.description|raw}}</p>
+
+    <p>{% if item.duree < 60 %}
+
+        {{ item.duree }} minutes
+
+    {% else %}
+
+    {% set heures = item.duree // 60 %}
+    {% set minutes = item.duree % 60  %}
+
+        {% if minutes %}
+
+            {{heures}} heure{{ heures > 1 ? 's' : '' }} {{ minutes }} minute{{ minutes > 1 ? 's' : '' }}
+            
+        {% else %}
+
+            {{ heures }} heure{{ heures > 1 ? 's' : '' }}
+
+        {% endif %}
+
+    {% endif %} </p>
+
+    <p>{{ item.prix }} €</p>
+
+<button type="button" data-id="{{ item.id }}" data-nom="{{ item.nom }}" class="reservation">Réserver</button>
+{% endfor %}
+<dialog id="fenetreReservation" class="fenetre" data-invalid="{{ form.vars.submitted and not form.vars.valid ? 'true' : 'false' }}">
+    <button type="button" id="fermer">X</button>
+    <p>Réservation <span id="nomPrestation"></span></p>
+    {# {{ form_start(form) }} #}
+    {{ form_start(form, {attr: {novalidate: 'novalidate', 'data-turbo': 'false'}}) }}
+    {{ form_errors(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">envoyer</button>
+    {{ form_end(form) }}
+</dialog>
+
+
+<script>
+    // const buttons = document.querySelectorAll('.reservation');
+    // const fenetre = document.querySelector('#fenetreReservation');
+    
+    // buttons.forEach(function (button) {
+    //     button.addEventListener("click", function () {
+
+    //         fenetre.showModal();
+    //         document.querySelector('#rendez_vous_Prestation').value = button.dataset.id;
+            
+    //     });
+        
+    // });
+
+    // const fermeture = document.querySelector('#fermer');
+    
+    // fermeture.addEventListener("click", function () {
+        
+    //     fenetre.close();
+    // });
+
+    // const flashes = document.querySelector('.flash-success');
+
+    // if (flashes) {
+
+    //     setTimeout(() => { flashes.remove();
+            
+    //     }, 4000);
+        
+    // }
+
+</script>
+{% endblock %}
+ 
